@@ -1,30 +1,34 @@
 import Phaser from 'phaser';
-import logoImg from './assets/logo.png';
+import assets from './assetManifest';
+import Loader from './scenes/loading';
+import Intro from './scenes/intro';
 
-class MyGame extends Phaser.Scene
+/**
+ * This should be the root and should manage scenes?
+ */
+
+class Root extends Phaser.Scene
 {
     constructor ()
     {
-        super();
+      super();
+      console.log("Root.construct");
     }
 
     preload ()
     {
-        this.load.image('logo', logoImg);
-    }
+      console.log("Root.load");
       
+      Loader(this, assets)
+        // Go to next scene
+        .then(() => this.scene.add('intro', Intro, true, { x: 400, y: 300 }))
+        // Go to error scene 
+        .catch(e => e);
+    } 
+    
     create ()
     {
-        const logo = this.add.image(400, 150, 'logo');
-      
-        this.tweens.add({
-            targets: logo,
-            y: 450,
-            duration: 2000,
-            ease: "Power2",
-            yoyo: true,
-            loop: -1
-        });
+      console.log("Root.create");
     }
 }
 
@@ -33,7 +37,7 @@ const config = {
     parent: 'root',
     width: 800,
     height: 600,
-    scene: MyGame
+    scene: Root
 };
 
 const game = new Phaser.Game(config);
